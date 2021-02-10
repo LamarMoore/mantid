@@ -259,6 +259,10 @@ bool ALCDataLoadingView::setCurrentLog(const QString &log) {
  */
 void ALCDataLoadingView::setAvailablePeriods(
     const std::vector<std::string> &periods) {
+  if (periods.size() == m_numPeriods)
+    return;
+  m_numPeriods = periods.size();
+
   setAvailableItems(m_ui.redPeriod, periods);
   setAvailableItems(m_ui.greenPeriod, periods);
 

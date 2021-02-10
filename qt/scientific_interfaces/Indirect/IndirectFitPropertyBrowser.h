@@ -68,6 +68,7 @@ public:
                            const std::vector<double> &chiSquared);
   void updateFitStatus(const FitDomainIndex index);
   FittingMode getFittingMode() const;
+  QString selectedFitType() const;
   void setConvolveMembers(bool convolveEnabled);
   void setOutputCompositeMembers(bool outputEnabled);
   void setFitEnabled(bool enable);
@@ -115,6 +116,7 @@ private:
   IFunction_sptr getSingleFunction() const;
   QStringList getGlobalParameters() const;
   QStringList getLocalParameters() const;
+  void updateFitStatus(const FitDomainIndex index);
   void syncFullBrowserWithTemplate();
   void syncTemplateBrowserWithFull();
 

@@ -55,6 +55,8 @@ set ( TEST_PY_FILES
    muon_data_context_test.py
    muon_gui_context_test.py
    muon_group_pair_context_test.py
+   muon_plot_edit_context_test.py
+   muon_plotting_context_test.py
    results_tab_widget/results_tab_model_test.py
    results_tab_widget/results_tab_presenter_test.py
    transformWidget_test.py

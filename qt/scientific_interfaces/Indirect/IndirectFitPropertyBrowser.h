@@ -66,7 +66,6 @@ public:
   void updateMultiDatasetParameters(const ITableWorkspace &params);
   void updateFitStatusData(const std::vector<std::string> &status,
                            const std::vector<double> &chiSquared);
-  void updateFitStatus(const FitDomainIndex index);
   FittingMode getFittingMode() const;
   QString selectedFitType() const;
   void setConvolveMembers(bool convolveEnabled);

@@ -118,9 +118,9 @@ public:
     TS_ASSERT_EQUALS(results.filenames.size(), 0)
   }
 
-  void test_that_the_pound_symbol_does_not_cause_a_crash_when_file_searching() {
-    const auto searchText = QString("£");
-    const auto parameters = createFileSearch(searchText.toStdString());
+  void
+  test_that_a_non_ascii_character_does_not_cause_a_crash_when_file_searching() {
+    const auto parameters = createFileSearch("Â");
     const auto worker = new FindFilesWorker(parameters);
     const auto widget = createWidget(worker);
 

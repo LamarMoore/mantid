@@ -120,13 +120,13 @@ public:
 
   void
   test_that_a_non_ascii_character_does_not_cause_a_crash_when_file_searching() {
-    const auto parameters = createFileSearch("Â");
+    const auto parameters = createFileSearch("£");
     const auto worker = new FindFilesWorker(parameters);
     const auto widget = createWidget(worker);
 
     executeWorker(worker);
 
-    auto results = widget->getResults();
+    const auto results = widget->getResults();
     TS_ASSERT(widget->isFinishedSignalRecieved())
     TS_ASSERT_DIFFERS(results.error, "")
     TS_ASSERT_EQUALS(results.filenames.size(), 0)
@@ -139,7 +139,7 @@ public:
 
     executeWorker(worker);
 
-    auto results = widget->getResults();
+    const auto results = widget->getResults();
     TS_ASSERT(widget->isFinishedSignalRecieved())
     TS_ASSERT_EQUALS(results.error,
                      "Invalid value for property Filename (list of str lists) "

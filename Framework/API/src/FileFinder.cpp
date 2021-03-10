@@ -459,6 +459,9 @@ std::string FileFinderImpl::findRun(const std::string &hintstr,
     }
   }
 
+  if (filename.empty())
+    return "";
+
   // Look first at the original filename then for case variations. This is
   // important
   // on platforms where file names ARE case sensitive.

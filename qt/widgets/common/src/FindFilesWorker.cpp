@@ -23,6 +23,16 @@ using namespace Mantid::Kernel;
 using namespace Mantid::API;
 using namespace MantidQt::API;
 
+namespace {
+
+bool isASCII(const std::string &str) {
+  return !std::any_of(str.begin(), str.end(), [](char c) {
+    return static_cast<unsigned char>(c) > 127;
+  });
+}
+
+} // namespace
+
 /**
  * Constructor.
  *
@@ -52,17 +62,8 @@ void FindFilesWorker::run() {
   std::vector<std::string> filenames;
   QString valueForProperty;
 
-  if (m_parameters.searchText.empty()) {
-    if (m_parameters.isOptional)
-      error = "";
-    else
-      error = "No files specified.";
-
-    const auto result = createFindFilesSearchResult(
-        error, filenames, valueForProperty.toStdString());
-    finishSearching(result);
+  if (!validateSearchText())
     return;
-  }
 
   Mantid::API::FileFinderImpl &fileSearcher =
       Mantid::API::FileFinder::Instance();
@@ -120,6 +121,30 @@ void FindFilesWorker::run() {
   auto result = createFindFilesSearchResult(error, filenames,
                                             valueForProperty.toStdString());
   finishSearching(result);
+}
+
+/**
+ * Validate that the search text is not empty and contains no unsupported
+ * characters.
+ *
+ * @return a boolean indicating whether the search text is valid or not.
+ */
+bool FindFilesWorker::validateSearchText() {
+  std::string error;
+
+  if (m_parameters.searchText.empty()) {
+    error = "No files specified.";
+  } else if (!isASCII(m_parameters.searchText)) {
+    error = "An unsupported non-ASCII character was found in the search text.";
+  }
+
+  if (!error.empty()) {
+    std::vector<std::string> filenames;
+    finishSearching(createFindFilesSearchResult(
+        !m_parameters.isOptional ? error : "", filenames, ""));
+  }
+
+  return error.empty();
 }
 
 /**

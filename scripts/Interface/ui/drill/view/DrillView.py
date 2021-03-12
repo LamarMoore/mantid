@@ -501,6 +501,23 @@ class DrillView(QMainWindow):
             self.table.setCellContents(cells[i][0], cells[i][1],
                                        inc(contents, increment))
 
+    def event(self, event):
+        if event.type() == QEvent.ShortcutOverride:
+            if event.modifiers() == Qt.ControlModifier:
+                if event.key() == Qt.Key_S:
+                    self.actionSave.trigger()
+                    event.accept()
+                    return True
+                elif event.key() == Qt.Key_O:
+                    self.actionLoadRundex.trigger()
+                    event.accept()
+                    return True
+                elif event.key() == Qt.Key_Q:
+                    self.close()
+                    event.accept()
+                    return True
+        return super().event(event)
+
     def keyPressEvent(self, event):
         """
         Deal with key pressed events.

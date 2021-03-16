@@ -18,6 +18,7 @@
 
 namespace Mantid {
 namespace API {
+
 /** A property class for functions. Holds a shared pointer to a function. The
 string representation
 is the creation string accepted by the FunctionFactory.
@@ -30,7 +31,8 @@ class MANTID_API_DLL FunctionProperty
 public:
   /// Constructor.
   FunctionProperty(const std::string &name,
-                   const unsigned int direction = Kernel::Direction::Input);
+                   const unsigned int direction = Kernel::Direction::Input,
+                   bool isOptional = false);
 
   /// Copy constructor
   FunctionProperty(const FunctionProperty &right);
@@ -78,6 +80,8 @@ public:
 private:
   /// The function definition string (as used by the FunctionFactory)
   std::string m_definition;
+  /// A boolean for whether the property is optional or not.
+  bool m_isOptional;
 };
 
 } // namespace API

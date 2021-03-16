@@ -18,10 +18,12 @@ namespace API {
  *  @param direction :: The direction of the function (i.e. input or output)
  */
 FunctionProperty::FunctionProperty(const std::string &name,
-                                   const unsigned int direction)
+                                   const unsigned int direction,
+                                   bool isOptional)
     : Kernel::PropertyWithValue<std::shared_ptr<IFunction>>(
           name, std::shared_ptr<IFunction>(),
-          Kernel::IValidator_sptr(new Kernel::NullValidator()), direction) {}
+          Kernel::IValidator_sptr(new Kernel::NullValidator()), direction),
+      m_isOptional(isOptional) {}
 
 /// Copy constructor
 FunctionProperty::FunctionProperty(const FunctionProperty &right)
@@ -40,16 +42,16 @@ FunctionProperty &FunctionProperty::operator=(const FunctionProperty &right) {
  * @param value :: The value to set to
  * @return assigned PropertyWithValue
  */
-FunctionProperty &FunctionProperty::
-operator=(const std::shared_ptr<IFunction> &value) {
+FunctionProperty &
+FunctionProperty::operator=(const std::shared_ptr<IFunction> &value) {
   Kernel::PropertyWithValue<std::shared_ptr<IFunction>>::operator=(value);
   return *this;
 }
 
 //--------------------------------------------------------------------------------------
 /// Add the value of another property
-FunctionProperty &FunctionProperty::
-operator+=(Kernel::Property const * /*right*/) {
+FunctionProperty &
+FunctionProperty::operator+=(Kernel::Property const * /*right*/) {
   throw Kernel::Exception::NotImplementedError(
       "+= operator is not implemented for FunctionProperty.");
   return *this;
@@ -85,6 +87,13 @@ std::string FunctionProperty::getDefault() const { return ""; }
  */
 std::string FunctionProperty::setValue(const std::string &value) {
   std::string error;
+
+  if (m_isOptional && value.empty()) {
+    m_value = std::shared_ptr<IFunction>();
+    m_definition = value;
+    return error;
+  }
+
   try {
     m_value = std::shared_ptr<IFunction>(
         FunctionFactory::Instance().createInitialized(value));
@@ -114,6 +123,9 @@ std::string FunctionProperty::setValueFromJson(const Json::Value &value) {
  *  @returns A user level description of the problem or "" if it is valid.
  */
 std::string FunctionProperty::isValid() const {
+  if (m_isOptional)
+    return "";
+
   if (direction() == Kernel::Direction::Output) {
     return "";
   } else {

@@ -6,6 +6,7 @@
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "MantidMuon/PSIBackgroundSubtraction.h"
 #include "MantidAPI/FunctionFactory.h"
+#include "MantidAPI/FunctionProperty.h"
 #include "MantidAPI/IFunction.h"
 #include "MantidAPI/MatrixWorkspace.h"
 #include "MantidAPI/Run.h"
@@ -58,6 +59,12 @@ void PSIBackgroundSubtraction::init() {
           "InputWorkspace", "", Direction::InOut, PropertyMode::Mandatory),
       "Input workspace containing the PSI bin data "
       "which the background correction will be applied to.");
+
+  declareProperty(
+      std::make_unique<API::FunctionProperty>("AdditionalFunction",
+                                              Direction::Input, true),
+      "An additional fit function that will be added to the default fit "
+      "function, before being used for the background substraction.");
 
   declareProperty(
       "StartX", EMPTY_DBL(),
@@ -191,14 +198,10 @@ void PSIBackgroundSubtraction::calculateBackgroundUsingFit(
  */
 IAlgorithm_sptr
 PSIBackgroundSubtraction::setupFitAlgorithm(const std::string &wsName) {
-  std::string functionstring = "name=FlatBackground,A0=0;name=ExpDecayMuon";
-  IFunction_sptr func =
-      FunctionFactory::Instance().createInitialized(functionstring);
-
   IAlgorithm_sptr fit = createChildAlgorithm("Fit");
   int maxIterations = getProperty("MaxIterations");
   fit->initialize();
-  fit->setProperty("Function", func);
+  fit->setProperty("Function", getFunction());
   fit->setProperty("MaxIterations", maxIterations);
   fit->setPropertyValue("Minimizer", MINIMISER);
   fit->setProperty("CreateOutput", false);
@@ -227,6 +230,18 @@ std::tuple<double, double> PSIBackgroundSubtraction::calculateBackgroundFromFit(
 }
 
 /**
+ * Gets the Function to use for the background subtraction.
+ * @return An IFunction_sptr used in the Fit algorithm.
+ */
+IFunction_sptr PSIBackgroundSubtraction::getFunction() const {
+  std::string funcString = "name=FlatBackground,A0=0;name=ExpDecayMuon";
+  if (!getPointerToProperty("AdditionalFunction")->isDefault())
+    funcString += ";" + getPropertyValue("AdditionalFunction");
+
+  return FunctionFactory::Instance().createInitialized(funcString);
+}
+
+/**
  * Gets the X range to use for fitting to the current index in the
  * InputWorkspace. If a Start or End X is not provided, the start or end X from
  * the InputWorkspace is used instead.
@@ -236,7 +251,7 @@ std::tuple<double, double> PSIBackgroundSubtraction::calculateBackgroundFromFit(
  */
 std::pair<double, double>
 PSIBackgroundSubtraction::getRange(MatrixWorkspace_const_sptr inputWorkspace,
-                                   const std::size_t &index) {
+                                   const std::size_t &index) const {
   double startX = getProperty("StartX");
   double endX = getProperty("EndX");
   if (isEmpty(startX) || isEmpty(endX)) {

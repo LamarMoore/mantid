@@ -18,7 +18,6 @@
 
 namespace Mantid {
 namespace API {
-
 /** A property class for functions. Holds a shared pointer to a function. The
 string representation
 is the creation string accepted by the FunctionFactory.
@@ -80,7 +79,7 @@ public:
 private:
   /// The function definition string (as used by the FunctionFactory)
   std::string m_definition;
-  /// A boolean for whether the property is optional or not.
+  /// A boolean stating whether the property is optional or not.
   bool m_isOptional;
 };
 

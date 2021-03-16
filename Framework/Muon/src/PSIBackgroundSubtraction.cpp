@@ -28,8 +28,9 @@ constexpr double FIT_TOLERANCE = 10;
 const std::string FIRST_GOOD = "First good spectra ";
 const std::string LAST_GOOD = "Last good spectra ";
 
-std::pair<double, double> getRange(const MatrixWorkspace_sptr &inputWorkspace,
-                                   const size_t &index) {
+std::pair<double, double>
+getRangeFromWorkspace(MatrixWorkspace_const_sptr inputWorkspace,
+                      const size_t &index) {
   auto firstGoodIndex = std::stoi(
       inputWorkspace->getLog(FIRST_GOOD + std::to_string(index))->value());
   auto lastGoodIndex = std::stoi(
@@ -57,6 +58,16 @@ void PSIBackgroundSubtraction::init() {
           "InputWorkspace", "", Direction::InOut, PropertyMode::Mandatory),
       "Input workspace containing the PSI bin data "
       "which the background correction will be applied to.");
+
+  declareProperty(
+      "StartX", EMPTY_DBL(),
+      "An X value in the first bin to be included in the background "
+      "subtraction. If this is not provided, it will use a start X found in "
+      "the InputWorkspace.");
+  declareProperty("EndX", EMPTY_DBL(),
+                  "An X value in the last bin to be included in the background "
+                  "subtraction. If this is not provided, it will use an end X "
+                  "found in the InputWorkspace.");
 
   auto mustBePositive = std::make_shared<Kernel::BoundedValidator<int>>();
   mustBePositive->setLower(0);
@@ -113,6 +124,15 @@ std::map<std::string, std::string> PSIBackgroundSubtraction::validateInputs() {
           "\n Input Workspace should have last good data < number of bins. ";
     }
   }
+
+  if (!isDefault("StartX") && !isDefault("EndX")) {
+    const double startX = getProperty("StartX");
+    const double endX = getProperty("EndX");
+    if (startX > endX) {
+      errors["StartX"] = "StartX must be less than EndX.";
+      errors["EndX"] = "EndX must be greater than StartX.";
+    }
+  }
   return errors;
 }
 
@@ -121,6 +141,7 @@ void PSIBackgroundSubtraction::exec() {
   // Caclulate and subtract background from inputWS
   calculateBackgroundUsingFit(inputWS);
 }
+
 /**
  * Calculate the background of a PSI workspace by performing a fit, comprising
  of a FlatBackground and ExpDecayMuon, on the second half of the PSI data.
@@ -204,5 +225,29 @@ std::tuple<double, double> PSIBackgroundSubtraction::calculateBackgroundFromFit(
   double chi2 = std::stod(fit->getPropertyValue("OutputChi2overDof"));
   return std::make_tuple(flatbackground, chi2);
 }
+
+/**
+ * Gets the X range to use for fitting to the current index in the
+ * InputWorkspace. If a Start or End X is not provided, the start or end X from
+ * the InputWorkspace is used instead.
+ * @param inputWorkspace :: The workspace being fitted too.
+ * @param index :: The workspace index the fit will be performed on.
+ * @return An X range to use for the fitting.
+ */
+std::pair<double, double>
+PSIBackgroundSubtraction::getRange(MatrixWorkspace_const_sptr inputWorkspace,
+                                   const std::size_t &index) {
+  double startX = getProperty("StartX");
+  double endX = getProperty("EndX");
+  if (isEmpty(startX) || isEmpty(endX)) {
+    const auto range = getRangeFromWorkspace(inputWorkspace, index);
+    if (isEmpty(startX))
+      startX = range.first;
+    if (isEmpty(endX))
+      endX = range.second;
+  }
+  return std::make_pair(startX, endX);
+}
+
 } // namespace Muon
 } // namespace Mantid

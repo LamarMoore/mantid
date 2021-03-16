@@ -42,16 +42,16 @@ FunctionProperty &FunctionProperty::operator=(const FunctionProperty &right) {
  * @param value :: The value to set to
  * @return assigned PropertyWithValue
  */
-FunctionProperty &
-FunctionProperty::operator=(const std::shared_ptr<IFunction> &value) {
+FunctionProperty &FunctionProperty::
+operator=(const std::shared_ptr<IFunction> &value) {
   Kernel::PropertyWithValue<std::shared_ptr<IFunction>>::operator=(value);
   return *this;
 }
 
 //--------------------------------------------------------------------------------------
 /// Add the value of another property
-FunctionProperty &
-FunctionProperty::operator+=(Kernel::Property const * /*right*/) {
+FunctionProperty &FunctionProperty::
+operator+=(Kernel::Property const * /*right*/) {
   throw Kernel::Exception::NotImplementedError(
       "+= operator is not implemented for FunctionProperty.");
   return *this;

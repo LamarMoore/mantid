@@ -86,6 +86,11 @@ void PSIBackgroundSubtraction::init() {
   mustBeGreater0->setLower(1);
   declareProperty("Binning", 1, mustBeGreater0,
                   "Constant sized rebinning of the data");
+
+  declareProperty(
+      std::make_unique<API::FunctionProperty>("OutputFunction",
+                                              Direction::Output),
+      "The full function that was fitted during the background subtraction.");
 }
 
 std::map<std::string, std::string> PSIBackgroundSubtraction::validateInputs() {
@@ -224,6 +229,8 @@ std::tuple<double, double> PSIBackgroundSubtraction::calculateBackgroundFromFit(
   fit->setProperty("WorkspaceIndex", workspaceIndex);
   fit->execute();
   IFunction_sptr func = fit->getProperty("Function");
+  setProperty("OutputFunction", func);
+
   double flatbackground = func->getParameter("f0.A0");
   double chi2 = std::stod(fit->getPropertyValue("OutputChi2overDof"));
   return std::make_tuple(flatbackground, chi2);

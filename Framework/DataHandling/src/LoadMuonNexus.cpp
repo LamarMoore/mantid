@@ -113,6 +113,13 @@ void LoadMuonNexus::init() {
                                                      PropertyMode::Optional),
       "Table or a group of tables with information about the "
       "detector grouping stored in the file (if any). Version 1 only.");
+
+  declareProperty(
+      std::make_unique<ArrayProperty<std::string>>("PeriodsInformation"),
+      "An array of strings which hold period information. This array is in the "
+      "format ['NumberOfSequences', 'Labels', 'TotalFrames']. Empty strings "
+      "show no value "
+      "could be read from file.");
 }
 
 /// Validates the optional 'spectra to read' properties, if they have been set

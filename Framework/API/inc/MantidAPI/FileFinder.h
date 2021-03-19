@@ -72,6 +72,8 @@ private:
   FileFinderImpl(const FileFinderImpl &);
   /// Assignment operator
   FileFinderImpl &operator=(const FileFinderImpl &);
+  /// A method that throws an exception if the provided runs are invalid
+  void validateRuns(const std::string &searchText) const;
   std::string extractAllowedSuffix(std::string &userString) const;
   std::pair<std::string, std::string>
   toInstrumentAndNumber(const std::string &hint) const;

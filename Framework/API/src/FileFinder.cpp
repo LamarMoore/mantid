@@ -45,6 +45,13 @@ Mantid::Kernel::Logger g_log("FileFinder");
 bool containsWildCard(const std::string &ext) {
   return std::string::npos != ext.find('*');
 }
+
+bool isASCII(const std::string &str) {
+  return !std::any_of(str.cbegin(), str.cend(), [](char c) {
+    return static_cast<unsigned char>(c) > 127;
+  });
+}
+
 } // namespace
 
 namespace Mantid {
@@ -537,6 +544,20 @@ void FileFinderImpl::getUniqueExtensions(
 }
 
 /**
+ * Performs validation on the search text entered into the File Finder. It will
+ * throw an exception if a problem is found. This error would then be caught and
+ * displayed to a user.
+ * @param searchText :: The text to validate.
+ * @throw std::invalid_argument if the searchText is invalid
+ */
+void FileFinderImpl::validateRuns(const std::string &searchText) const {
+  if (!isASCII(searchText)) {
+    throw std::invalid_argument(
+        "An unsupported non-ASCII character was found in the search text.");
+  }
+}
+
+/**
  * Find a list of files file given a hint. Calls findRun internally.
  * @param hintstr :: Comma separated list of hints to findRun method.
  *  Can also include ranges of runs, e.g. 123-135 or equivalently 123-35.
@@ -555,6 +576,8 @@ std::vector<std::string>
 FileFinderImpl::findRuns(const std::string &hintstr,
                          const std::vector<std::string> &exts,
                          const bool useExtsOnly) const {
+  validateRuns(hintstr);
+
   std::string hint = Kernel::Strings::strip(hintstr);
   g_log.debug() << "findRuns hint = " << hint << "\n";
   std::vector<std::string> res;

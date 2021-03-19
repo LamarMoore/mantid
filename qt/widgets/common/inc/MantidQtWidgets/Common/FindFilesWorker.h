@@ -76,8 +76,6 @@ protected:
   virtual void run() override;
 
 private:
-  /// Validate that the search text does not contain unsupported characters
-  bool validateSearchText();
   /// Emit search result if required
   void finishSearching(const FindFilesSearchResults &result);
 

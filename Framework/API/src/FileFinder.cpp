@@ -545,16 +545,18 @@ void FileFinderImpl::getUniqueExtensions(
 
 /**
  * Performs validation on the search text entered into the File Finder. It will
- * throw an exception if a problem is found. This error would then be caught and
- * displayed to a user.
+ * return a vector of error messages if problems are found.
  * @param searchText :: The text to validate.
- * @throw std::invalid_argument if the searchText is invalid
+ * @return A vector of error messages.
  */
-void FileFinderImpl::validateRuns(const std::string &searchText) const {
+std::vector<std::string>
+FileFinderImpl::validateRuns(const std::string &searchText) const {
+  std::vector<std::string> errors;
   if (!isASCII(searchText)) {
-    throw std::invalid_argument(
+    errors.emplace_back(
         "An unsupported non-ASCII character was found in the search text.");
   }
+  return errors;
 }
 
 /**
@@ -576,7 +578,13 @@ std::vector<std::string>
 FileFinderImpl::findRuns(const std::string &hintstr,
                          const std::vector<std::string> &exts,
                          const bool useExtsOnly) const {
-  validateRuns(hintstr);
+  auto const errors = validateRuns(hintstr);
+  if (!errors.empty()) {
+    std::stringstream ss;
+    std::copy(errors.cbegin(), errors.cend(),
+              std::ostream_iterator<std::string>(ss, "\n"));
+    throw std::invalid_argument(ss.str());
+  }
 
   std::string hint = Kernel::Strings::strip(hintstr);
   g_log.debug() << "findRuns hint = " << hint << "\n";

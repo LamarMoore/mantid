@@ -73,7 +73,7 @@ private:
   /// Assignment operator
   FileFinderImpl &operator=(const FileFinderImpl &);
   /// A method that returns error messages if the provided runs are invalid
-  std::vector<std::string> validateRuns(const std::string &searchText) const;
+  std::string validateRuns(const std::string &searchText) const;
   std::string extractAllowedSuffix(std::string &userString) const;
   std::pair<std::string, std::string>
   toInstrumentAndNumber(const std::string &hint) const;

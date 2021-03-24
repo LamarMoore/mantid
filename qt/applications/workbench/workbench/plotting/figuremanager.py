@@ -74,6 +74,9 @@ class FigureManagerADSObserver(AnalysisDataServiceObserver):
         self.observeReplace(True)
         self.observeRename(True)
 
+    def __del__(self):
+        self.observeAll(False)
+
     @_catch_exceptions
     def clearHandle(self):
         """Called when the ADS is deleted all of its workspaces"""
@@ -316,8 +319,8 @@ class FigureManagerWorkbench(FigureManagerBase, QObject):
 
         if self.toolbar:
             self.toolbar.destroy()
-        self._ads_observer.observeAll(False)
         del self._ads_observer
+        self._ads_observer = None
         # disconnect window events before calling Gcf.destroy. window.close is not guaranteed to
         # delete the object and do this for us. On macOS it was observed that closing the figure window
         # would produce an extraneous activated event that would add a new figure to the plots list

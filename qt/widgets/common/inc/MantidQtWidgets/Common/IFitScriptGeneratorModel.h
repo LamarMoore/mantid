@@ -58,9 +58,18 @@ public:
   [[nodiscard]] virtual std::string getEquivalentFunctionIndexForDomain(
       std::string const &workspaceName, WorkspaceIndex workspaceIndex,
       std::string const &functionIndex) const = 0;
+  [[nodiscard]] virtual std::string getEquivalentFunctionIndexForDomain(
+      FitDomainIndex domainIndex, std::string const &functionIndex) const = 0;
   [[nodiscard]] virtual std::string getEquivalentParameterTieForDomain(
       std::string const &workspaceName, WorkspaceIndex workspaceIndex,
       std::string const &fullParameter, std::string const &fullTie) const = 0;
+  [[nodiscard]] virtual std::string
+  getAdjustedFunctionIndex(std::string const &parameter) const = 0;
+  [[nodiscard]] virtual std::string
+  getFullParameter(FitDomainIndex domainIndex,
+                   std::string const &parameter) const = 0;
+  [[nodiscard]] virtual std::string
+  getFullTie(FitDomainIndex domainIndex, std::string const &tie) const = 0;
 
   virtual void updateParameterValue(std::string const &workspaceName,
                                     WorkspaceIndex workspaceIndex,
@@ -96,6 +105,40 @@ public:
   getGlobalParameters() const = 0;
 
   [[nodiscard]] virtual bool isSimultaneousMode() const = 0;
+
+  [[nodiscard]] virtual bool
+  hasParameter(FitDomainIndex domainIndex,
+               std::string const &parameter) const = 0;
+
+  virtual void setParameterValue(FitDomainIndex domainIndex,
+                                 std::string const &fullParameter,
+                                 double value) = 0;
+  virtual void setParameterFixed(FitDomainIndex domainIndex,
+                                 std::string const &fullParameter,
+                                 bool fix) = 0;
+  virtual void setParameterTie(FitDomainIndex domainIndex,
+                               std::string const &fullParameter,
+                               std::string const &tie) = 0;
+  virtual void setParameterConstraint(FitDomainIndex domainIndex,
+                                      std::string const &fullParameter,
+                                      std::string const &constraint) = 0;
+
+  [[nodiscard]] virtual std::string
+  getDomainName(FitDomainIndex domainIndex) const = 0;
+  [[nodiscard]] virtual double
+  getParameterValue(FitDomainIndex domainIndex,
+                    std::string const &fullParameter) const = 0;
+  [[nodiscard]] virtual bool
+  isParameterFixed(FitDomainIndex domainIndex,
+                   std::string const &fullParameter) const = 0;
+  [[nodiscard]] virtual std::string
+  getParameterTie(FitDomainIndex domainIndex,
+                  std::string const &fullParameter) const = 0;
+  [[nodiscard]] virtual std::string
+  getParameterConstraint(FitDomainIndex domainIndex,
+                         std::string const &fullParameter) const = 0;
+
+  [[nodiscard]] virtual std::size_t numberOfDomains() const = 0;
 };
 
 } // namespace MantidWidgets

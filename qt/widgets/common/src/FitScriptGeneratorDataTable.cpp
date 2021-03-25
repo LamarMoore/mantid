@@ -210,7 +210,7 @@ std::vector<FitDomainIndex> FitScriptGeneratorDataTable::allRows() const {
   for (auto index = 0; index < this->rowCount(); ++index)
     rowIndices.emplace_back(FitDomainIndex(index));
 
-  std::sort(rowIndices.rbegin(), rowIndices.rend());
+  std::reverse(rowIndices.begin(), rowIndices.end());
   return rowIndices;
 }
 
@@ -224,7 +224,7 @@ std::vector<FitDomainIndex> FitScriptGeneratorDataTable::selectedRows() const {
       rowIndices.emplace_back(
           FitDomainIndex(static_cast<std::size_t>(rowIndex.row())));
 
-    std::sort(rowIndices.rbegin(), rowIndices.rend());
+    std::reverse(rowIndices.begin(), rowIndices.end());
   }
   return rowIndices;
 }

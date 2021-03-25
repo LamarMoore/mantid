@@ -53,6 +53,10 @@ IFunction_sptr getFunctionWithPrefix(const QString &prefix,
                                compFun->getFunction(funIndex));
 }
 
+std::pair<QString, int> splitFunctionPrefix(const std::string &prefix) {
+  return splitFunctionPrefix(QString::fromStdString(prefix));
+}
+
 std::pair<QString, int> splitFunctionPrefix(const QString &prefix) {
   if (prefix.isEmpty())
     return std::make_pair("", -1);
@@ -101,7 +105,8 @@ splitConstraintString(const QString &constraint) {
     try // find position of the parameter name in expression
     {
       boost::lexical_cast<double>(expr[1].name());
-    } catch (...) {
+    }
+    catch (...) {
       paramPos = 1;
     }
     std::string op = expr[1].operator_name();

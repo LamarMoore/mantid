@@ -30,6 +30,7 @@ public:
   FitDomain(std::string const &workspaceName, WorkspaceIndex workspaceIndex,
             double startX, double endX);
 
+  [[nodiscard]] std::string domainName() const;
   [[nodiscard]] std::string workspaceName() const noexcept {
     return m_workspaceName;
   }
@@ -51,6 +52,9 @@ public:
   void setParameterValue(std::string const &parameter, double newValue);
   [[nodiscard]] double getParameterValue(std::string const &parameter) const;
 
+  void setParameterFixed(std::string const &parameter, bool fix) const;
+  [[nodiscard]] bool isParameterFixed(std::string const &parameter) const;
+
   void setAttributeValue(std::string const &attribute,
                          Mantid::API::IFunction::Attribute newValue);
   [[nodiscard]] Mantid::API::IFunction::Attribute
@@ -58,6 +62,9 @@ public:
 
   [[nodiscard]] bool hasParameter(std::string const &parameter) const;
   [[nodiscard]] bool isParameterActive(std::string const &parameter) const;
+  [[nodiscard]] std::string getParameterTie(std::string const &parameter) const;
+  [[nodiscard]] std::string
+  getParameterConstraint(std::string const &parameter) const;
 
   void clearParameterTie(std::string const &parameter);
   [[nodiscard]] bool updateParameterTie(std::string const &parameter,

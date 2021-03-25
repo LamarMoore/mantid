@@ -67,6 +67,8 @@ private:
                                         std::string const &constraint);
   void handleGlobalParametersChanged(
       std::vector<std::string> const &globalParameters);
+  void handleEditLocalParameterClicked(std::string const &parameter);
+  void handleEditLocalParameterFinished();
   void handleFittingModeChanged(FittingMode fittingMode);
 
   void setWorkspaces(QStringList const &workspaceNames, double startX,
@@ -134,6 +136,29 @@ private:
                                Args... arguments);
 
   [[nodiscard]] std::vector<FitDomainIndex> getRowIndices() const;
+
+  void insertLocalParameterData(std::string const &parameter,
+                                std::vector<std::string> &workspaceNames,
+                                std::vector<std::string> &domainNames,
+                                std::vector<double> &values,
+                                std::vector<bool> &fixes,
+                                std::vector<std::string> &ties,
+                                std::vector<std::string> &constraints) const;
+  void insertLocalParameterDataForDomain(
+      FitDomainIndex domainIndex, std::string const &parameter,
+      std::vector<std::string> &workspaceNames,
+      std::vector<std::string> &domainNames, std::vector<double> &values,
+      std::vector<bool> &fixes, std::vector<std::string> &ties,
+      std::vector<std::string> &constraints) const;
+
+  void setLocalParameterDataForDomain(FitDomainIndex domainIndex,
+                                      std::string const &parameter,
+                                      double value, bool fix,
+                                      std::string const &tie,
+                                      std::string const &constraint);
+
+  std::vector<FitDomainIndex>
+  getDomainsWithLocalParameter(std::string const &parameter) const;
 
   std::tuple<std::string, std::string> convertFunctionIndexOfParameterTie(
       std::string const &workspaceName, WorkspaceIndex workspaceIndex,

@@ -50,6 +50,8 @@ public:
     ParameterConstraintRemoved,
     ParameterConstraintChanged,
     GlobalParametersChanged,
+    EditLocalParameterClicked,
+    EditLocalParameterFinished,
     FittingModeChanged
   };
 
@@ -88,6 +90,18 @@ public:
   getDialogWorkspaces() = 0;
   [[nodiscard]] virtual std::vector<WorkspaceIndex>
   getDialogWorkspaceIndices() const = 0;
+
+  virtual void
+  openEditLocalParameterDialog(std::string const &parameter,
+                               std::vector<std::string> const &workspaceNames,
+                               std::vector<std::string> const &domainNames,
+                               std::vector<double> const &values,
+                               std::vector<bool> const &fixes,
+                               std::vector<std::string> const &ties,
+                               std::vector<std::string> const &constraints) = 0;
+  virtual std::tuple<std::string, std::vector<double>, std::vector<bool>,
+                     std::vector<std::string>, std::vector<std::string>>
+  getEditLocalParameterResults() const = 0;
 
   virtual void resetSelection() = 0;
 

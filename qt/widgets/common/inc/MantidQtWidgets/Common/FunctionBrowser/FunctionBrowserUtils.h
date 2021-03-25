@@ -40,6 +40,8 @@ getFunctionWithPrefix(const QString &prefix, const IFunction_sptr &fun);
 /// Split a function (eg f0.f3.f1.) into the parent prefix (f0.f3.) and the
 /// index of the child function (1).
 EXPORT_OPT_MANTIDQT_COMMON std::pair<QString, int>
+splitFunctionPrefix(const std::string &prefix);
+EXPORT_OPT_MANTIDQT_COMMON std::pair<QString, int>
 splitFunctionPrefix(const QString &prefix);
 
 /// Split a constraint definition into a parameter name and a pair of bounds,

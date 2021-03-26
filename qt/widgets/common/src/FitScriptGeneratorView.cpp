@@ -53,7 +53,7 @@ std::vector<T> convertQListToStdVector(QList<T> const &qList) {
 
 QString toQString(std::string const &str) {
   return QString::fromStdString(str);
-};
+}
 
 QString
 globalToQString(MantidQt::MantidWidgets::GlobalParameter const &global) {

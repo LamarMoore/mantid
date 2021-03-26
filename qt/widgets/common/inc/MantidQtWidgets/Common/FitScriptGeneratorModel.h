@@ -148,7 +148,7 @@ public:
   getDomainName(FitDomainIndex domainIndex) const override;
   [[nodiscard]] double
   getParameterValue(FitDomainIndex domainIndex,
-                    std::string const &fullParameter) const;
+                    std::string const &fullParameter) const override;
   [[nodiscard]] bool
   isParameterFixed(FitDomainIndex domainIndex,
                    std::string const &fullParameter) const override;

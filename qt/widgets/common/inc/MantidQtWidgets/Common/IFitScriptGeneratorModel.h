@@ -108,7 +108,7 @@ public:
 
   [[nodiscard]] virtual bool
   hasParameter(FitDomainIndex domainIndex,
-               std::string const &parameter) const = 0;
+               std::string const &fullParameter) const = 0;
 
   virtual void setParameterValue(FitDomainIndex domainIndex,
                                  std::string const &fullParameter,

@@ -211,6 +211,9 @@ std::string FitScriptGeneratorModel::getEquivalentFunctionIndexForDomain(
 
 std::string FitScriptGeneratorModel::getEquivalentFunctionIndexForDomain(
     FitDomainIndex domainIndex, std::string const &functionIndex) const {
+  if (domainIndex.value >= numberOfDomains())
+    throw std::invalid_argument("The domain index provided does not exist.");
+
   if (!functionIndex.empty() && m_fittingMode == FittingMode::SIMULTANEOUS)
     return replaceTopFunctionIndexWith(functionIndex, domainIndex.value);
   return functionIndex;

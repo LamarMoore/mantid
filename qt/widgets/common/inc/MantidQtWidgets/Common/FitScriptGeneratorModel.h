@@ -109,15 +109,15 @@ public:
                                  std::string const &functionIndex,
                                  std::string const &constraint) override;
 
-  [[nodiscard]] inline std::vector<GlobalTie> getGlobalTies() const
-      noexcept override {
+  [[nodiscard]] inline std::vector<GlobalTie>
+  getGlobalTies() const noexcept override {
     return m_globalTies;
   }
 
   void setGlobalParameters(std::vector<std::string> const &parameters) override;
 
-  [[nodiscard]] inline std::vector<GlobalParameter> getGlobalParameters() const
-      noexcept override {
+  [[nodiscard]] inline std::vector<GlobalParameter>
+  getGlobalParameters() const noexcept override {
     return m_globalParameters;
   }
 
@@ -128,8 +128,9 @@ public:
 
   [[nodiscard]] bool isSimultaneousMode() const override;
 
-  [[nodiscard]] bool hasParameter(FitDomainIndex domainIndex,
-                                  std::string const &parameter) const override;
+  [[nodiscard]] bool
+  hasParameter(FitDomainIndex domainIndex,
+               std::string const &fullParameter) const override;
 
   void setParameterValue(FitDomainIndex domainIndex,
                          std::string const &fullParameter,
@@ -150,13 +151,13 @@ public:
                     std::string const &fullParameter) const;
   [[nodiscard]] bool
   isParameterFixed(FitDomainIndex domainIndex,
-                   std::string const &parameter) const override;
+                   std::string const &fullParameter) const override;
   [[nodiscard]] std::string
   getParameterTie(FitDomainIndex domainIndex,
-                  std::string const &parameter) const override;
+                  std::string const &fullParameter) const override;
   [[nodiscard]] std::string
   getParameterConstraint(FitDomainIndex domainIndex,
-                         std::string const &parameter) const override;
+                         std::string const &fullParameter) const override;
 
   [[nodiscard]] inline std::size_t numberOfDomains() const noexcept override {
     return m_fitDomains.size();
